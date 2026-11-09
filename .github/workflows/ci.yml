@@ -6,12 +6,25 @@ on:
 jobs:
   test-macos-system-python:
     # The real target: the python3 that ships with macOS (3.9).
-    runs-on: macos-latest
+    #
+    # runs-on is an expression because this repo is dual-homed: GitHub has
+    # hosted macOS runners, the self-hosted Gitea mirror only advertises
+    # ubuntu-latest / ubuntu-22.04 / ubuntu-24.04. A bare `macos-latest` there
+    # queues a job no runner can ever take (Gitea matches runs-on before it
+    # looks at a job-level `if`, so `if:` cannot guard this). Resolving runs-on
+    # per forge keeps the job dispatchable everywhere; the macOS-only steps are
+    # then gated on runner.os, which the runner evaluates after dispatch.
+    runs-on: ${{ github.server_url == 'https://github.com' && 'macos-latest' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v5
-      - run: /usr/bin/python3 --version
-      - run: /usr/bin/python3 -m unittest discover -s tests -v
-      - run: /usr/bin/python3 cu_local.py --version
+      - if: runner.os == 'macOS'
+        run: /usr/bin/python3 --version
+      - if: runner.os == 'macOS'
+        run: /usr/bin/python3 -m unittest discover -s tests -v
+      - if: runner.os == 'macOS'
+        run: /usr/bin/python3 cu_local.py --version
+      - if: runner.os != 'macOS'
+        run: echo "No macOS runner on this forge; the macOS system-python test runs on GitHub only."
 
   test-linux:
     runs-on: ubuntu-latest
