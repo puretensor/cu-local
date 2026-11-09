@@ -4,18 +4,23 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test-macos-system-python:
+    # The real target: the python3 that ships with macOS (3.9).
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: /usr/bin/python3 --version
+      - run: /usr/bin/python3 -m unittest discover -s tests -v
+      - run: /usr/bin/python3 cu_local.py --version
+
+  test-linux:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python: ["3.9", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          python-version: "3.12"
       - run: python -m unittest discover -s tests -v
-      - run: python cu_local.py --version
 
   lint:
     runs-on: ubuntu-latest

@@ -31,7 +31,7 @@ import urllib.request
 import uuid
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # --------------------------------------------------------------------------- paths
 
