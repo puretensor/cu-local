@@ -10,9 +10,9 @@ Without cu-local, two things go wrong when you try this. **Every step carries yo
 
 ## See it run
 
-<p align="center"><a href="https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4"><img src="assets/demo.gif" alt="DeepSeek V4.1 Flash fills in a five-line expense claim from receipts in Safari and submits it, while a side panel lists each step and a clock shows 33 seconds of real time" width="100%"></a></p>
+<p align="center"><a href="https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4"><img src="assets/demo.gif" alt="DeepSeek V4.1 Flash fills in a five-line expense claim from receipts in Safari and submits it, while a side panel lists each step and a clock shows 26 seconds of real time" width="100%"></a></p>
 
-DeepSeek V4.1 Flash, on our own 4× RTX PRO 6000 server, fills in an expense claim from five receipts on a MacBook and submits it, in 33 seconds of real time. The step list is the model's own description of each action. Thinking was off (`--effort none`). [Watch the full-quality MP4](https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4).
+DeepSeek V4.1 Flash, on our own 4× RTX PRO 6000 server, fills in an expense claim from five receipts on a MacBook and submits it, in 26 seconds of real time. The step list is the model's own description of each action. Thinking was off (`--effort none`). [Watch the full-quality MP4](https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4).
 
 ## Quick start
 
