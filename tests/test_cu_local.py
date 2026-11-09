@@ -149,6 +149,24 @@ class TranslateRequestTests(unittest.TestCase):
         self.assertTrue(chat["stream_options"]["include_usage"])
         self.assertEqual(chat["reasoning_effort"], "low")
 
+    def test_top_level_combinators_flattened(self):
+        schema = {"oneOf": [
+            {"type": "object", "properties": {"a": {"type": "string"}, "b": {"type": "integer"}}, "required": ["a", "b"]},
+            {"type": "object", "properties": {"a": {"type": "string"}, "c": {"type": "boolean"}}, "required": ["a"]}]}
+        out = cu.flatten_schema(schema)
+        self.assertEqual(out["type"], "object")
+        self.assertEqual(sorted(out["properties"]), ["a", "b", "c"])
+        self.assertEqual(out["required"], ["a"])
+        for k in ("oneOf", "anyOf", "allOf"):
+            self.assertNotIn(k, out)
+        allof = cu.flatten_schema({"allOf": [{"properties": {"x": {}}, "required": ["x"]},
+                                             {"properties": {"y": {}}, "required": ["y"]}]})
+        self.assertEqual(allof["required"], ["x", "y"])
+        plain = {"type": "object", "properties": {"q": {"anyOf": [{"type": "string"}, {"type": "null"}]}}}
+        self.assertIs(cu.flatten_schema(plain), plain)  # nested combinators are left alone
+        tools, _ = cu.translate_tools([{"type": "function", "name": "t", "parameters": schema}])
+        self.assertNotIn("oneOf", tools[0]["function"]["parameters"])
+
     def test_message_sequence(self):
         chat, _ = cu.translate_request(convo())
         roles = [m["role"] for m in chat["messages"]]

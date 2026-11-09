@@ -31,7 +31,7 @@ import urllib.request
 import uuid
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 
 # --------------------------------------------------------------------------- paths
 
@@ -394,6 +394,33 @@ def _user_content(parts: Any, text_only: bool) -> Any:
     return out
 
 
+def flatten_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+    """Some upstreams reject oneOf/anyOf/allOf at the top level of a tool schema. Merge the branches
+    into one object schema: properties are unioned; a field stays required only if every oneOf/anyOf
+    branch requires it (allOf: if any does). Looser than the original, never stricter."""
+    keys = [k for k in ("oneOf", "anyOf", "allOf") if isinstance(schema.get(k), list)]
+    if not keys:
+        return schema
+    out = {k: v for k, v in schema.items() if k not in ("oneOf", "anyOf", "allOf")}
+    props = dict(out.get("properties") or {})
+    required = set(out.get("required") or [])
+    for k in keys:
+        branches = [flatten_schema(b) for b in schema[k] if isinstance(b, dict)]
+        reqs = [set(b.get("required") or []) for b in branches]
+        for b in branches:
+            for name, sub in (b.get("properties") or {}).items():
+                props.setdefault(name, sub)
+        if reqs:
+            required |= set.union(*reqs) if k == "allOf" else set.intersection(*reqs)
+    out["type"] = "object"
+    out["properties"] = props
+    if required:
+        out["required"] = sorted(required)
+    else:
+        out.pop("required", None)
+    return out
+
+
 def translate_tools(tools: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, Tuple[Optional[str], str]]]:
     """Responses tools -> Chat tools. Returns (chat_tools, flat_name -> (namespace, name))."""
     out: List[Dict[str, Any]] = []
@@ -405,7 +432,7 @@ def translate_tools(tools: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], 
             return
         flat = _flat(ns, name)
         names[flat] = (ns, name)
-        f = {"name": flat, "parameters": fn.get("parameters") or {"type": "object", "properties": {}}}
+        f = {"name": flat, "parameters": flatten_schema(fn.get("parameters") or {"type": "object", "properties": {}})}
         desc = fn.get("description")
         if desc:
             f["description"] = desc
