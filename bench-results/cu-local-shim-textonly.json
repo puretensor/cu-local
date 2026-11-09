@@ -1,0 +1,68 @@
+{
+ "label": "DeepSeek + cu-local, shim, text-only, 32k",
+ "note": "Same model via the Responses->Chat shim with --text-only --context 32768 (DGX Spark emulation). 2026-11-09, n=2. Hidden bench folder as above.",
+ "cu_local_version": "0.2.0",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 99.5,
+   "ok": true,
+   "tool_calls": 36,
+   "input_tokens": 695022,
+   "cached_input_tokens": 636672,
+   "output_tokens": 5784,
+   "shell_calls": 0
+  },
+  {
+   "task": "calculator",
+   "seconds": 7.9,
+   "ok": false,
+   "tool_calls": 3,
+   "input_tokens": 46429,
+   "cached_input_tokens": 40192,
+   "output_tokens": 473,
+   "shell_calls": 0
+  },
+  {
+   "task": "textedit",
+   "seconds": 43.6,
+   "ok": true,
+   "tool_calls": 29,
+   "input_tokens": 545246,
+   "cached_input_tokens": 521728,
+   "output_tokens": 3265,
+   "shell_calls": 0
+  },
+  {
+   "task": "finder",
+   "seconds": 68.9,
+   "ok": true,
+   "tool_calls": 35,
+   "input_tokens": 639348,
+   "cached_input_tokens": 582144,
+   "output_tokens": 4835,
+   "shell_calls": 0
+  },
+  {
+   "task": "calculator",
+   "seconds": 12.0,
+   "ok": true,
+   "tool_calls": 4,
+   "input_tokens": 59630,
+   "cached_input_tokens": 52992,
+   "output_tokens": 512,
+   "shell_calls": 0
+  },
+  {
+   "task": "textedit",
+   "seconds": 34.2,
+   "ok": true,
+   "tool_calls": 21,
+   "input_tokens": 372988,
+   "cached_input_tokens": 353536,
+   "output_tokens": 2747,
+   "shell_calls": 0
+  }
+ ],
+ "slot": 2
+}

@@ -1,0 +1,37 @@
+{
+ "label": "Ollama, qwen3-vl:8b on 16 CPU cores",
+ "note": "Ollama 0.40.15, CPU only, context 32768. 2026-11-09, n=1. Protocol path check, not a speed claim.",
+ "cu_local_version": "0.2.0",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 242.9,
+   "ok": false,
+   "tool_calls": 9,
+   "input_tokens": 146815,
+   "cached_input_tokens": 119451,
+   "output_tokens": 35675,
+   "shell_calls": 0
+  },
+  {
+   "task": "calculator",
+   "seconds": 45.8,
+   "ok": true,
+   "tool_calls": 3,
+   "input_tokens": 33642,
+   "cached_input_tokens": 28113,
+   "output_tokens": 6261,
+   "shell_calls": 0
+  },
+  {
+   "task": "textedit",
+   "seconds": 207.1,
+   "ok": false,
+   "tool_calls": 9,
+   "input_tokens": 144306,
+   "cached_input_tokens": 122487,
+   "output_tokens": 31028,
+   "shell_calls": 0
+  }
+ ]
+}

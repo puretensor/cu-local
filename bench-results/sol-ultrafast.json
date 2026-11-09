@@ -1,0 +1,27 @@
+{
+ "label": "sol-ultrafast",
+ "note": "reference only, not charted",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 32,
+   "ok": true,
+   "input_tokens": 259987,
+   "output_tokens": 449
+  },
+  {
+   "task": "calculator",
+   "seconds": 22,
+   "ok": true,
+   "input_tokens": 120326,
+   "output_tokens": 215
+  },
+  {
+   "task": "textedit",
+   "seconds": 38,
+   "ok": true,
+   "input_tokens": 224800,
+   "output_tokens": 397
+  }
+ ]
+}

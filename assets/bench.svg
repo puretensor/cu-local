@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 576" width="1000" height="576" role="img" aria-labelledby="bt bd">
+<title id="bt">Seconds per computer-use task, lower is better</title>
+<desc id="bd">DeepSeek + cu-local: finder 37 s, calculator 10 s, textedit 56 s; DeepSeek + cu-local, shim, text-only, 32k: finder 84 s, calculator 12 s, textedit 39 s; gpt-6.1-sol (OpenAI): finder 29 s, calculator 22 s, textedit 38 s; DeepSeek, stock Codex config: finder 75 s, calculator 41 s, textedit 148 s</desc>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}.t1{fill:#1F2328}.t2{fill:#59636E}.grid{stroke:#D1D9E0}.base{stroke:#818B98}.s1{fill:#2a78d6}.s2{fill:#eb6834}.s3{fill:#1baf7a}.s4{fill:#eda100}@media (prefers-color-scheme: dark){.t1{fill:#E6EDF3}.t2{fill:#9198A1}.grid{stroke:#3D444D}.base{stroke:#6E7681}.s1{fill:#3987e5}.s2{fill:#d95926}.s3{fill:#199e70}.s4{fill:#c98500}}</style>
+<text class="t1" x="40" y="30" font-size="20" font-weight="600">Seconds per task, lower is better</text>
+<text class="t2" x="40" y="52" font-size="14">Median of passing runs on the same Mac. A label notes when some runs failed.</text>
+<rect class="s1" x="40" y="81" width="14" height="14" rx="3"/>
+<text class="t1" x="60" y="93" font-size="14">DeepSeek + cu-local</text>
+<rect class="s2" x="218" y="81" width="14" height="14" rx="3"/>
+<text class="t1" x="238" y="93" font-size="14">DeepSeek + cu-local, shim, text-only, 32k</text>
+<rect class="s3" x="553" y="81" width="14" height="14" rx="3"/>
+<text class="t1" x="573" y="93" font-size="14">gpt-6.1-sol (OpenAI)</text>
+<rect class="s4" x="739" y="81" width="14" height="14" rx="3"/>
+<text class="t1" x="759" y="93" font-size="14">DeepSeek, stock Codex config</text>
+<line class="grid" x1="202.0" y1="146" x2="202.0" y2="232" stroke-width="1"/>
+<line class="grid" x1="364.0" y1="146" x2="364.0" y2="232" stroke-width="1"/>
+<line class="grid" x1="526.0" y1="146" x2="526.0" y2="232" stroke-width="1"/>
+<line class="grid" x1="688.0" y1="146" x2="688.0" y2="232" stroke-width="1"/>
+<line class="grid" x1="850.0" y1="146" x2="850.0" y2="232" stroke-width="1"/>
+<line class="grid" x1="202.0" y1="280" x2="202.0" y2="366" stroke-width="1"/>
+<line class="grid" x1="364.0" y1="280" x2="364.0" y2="366" stroke-width="1"/>
+<line class="grid" x1="526.0" y1="280" x2="526.0" y2="366" stroke-width="1"/>
+<line class="grid" x1="688.0" y1="280" x2="688.0" y2="366" stroke-width="1"/>
+<line class="grid" x1="850.0" y1="280" x2="850.0" y2="366" stroke-width="1"/>
+<line class="grid" x1="202.0" y1="414" x2="202.0" y2="500" stroke-width="1"/>
+<line class="grid" x1="364.0" y1="414" x2="364.0" y2="500" stroke-width="1"/>
+<line class="grid" x1="526.0" y1="414" x2="526.0" y2="500" stroke-width="1"/>
+<line class="grid" x1="688.0" y1="414" x2="688.0" y2="500" stroke-width="1"/>
+<line class="grid" x1="850.0" y1="414" x2="850.0" y2="500" stroke-width="1"/>
+<text class="t2" x="40.0" y="520" font-size="13" text-anchor="middle">0 s</text>
+<text class="t2" x="202.0" y="520" font-size="13" text-anchor="middle">30 s</text>
+<text class="t2" x="364.0" y="520" font-size="13" text-anchor="middle">60 s</text>
+<text class="t2" x="526.0" y="520" font-size="13" text-anchor="middle">90 s</text>
+<text class="t2" x="688.0" y="520" font-size="13" text-anchor="middle">120 s</text>
+<text class="t2" x="850.0" y="520" font-size="13" text-anchor="middle">150 s</text>
+<text class="t1" x="40" y="140" font-size="15" font-weight="600">Finder: create and rename a folder</text>
+<path class="s1" d="M40 150 h195.5 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-195.5 z"><title>DeepSeek + cu-local, finder: 37.0 s (2/2 passed)</title></path>
+<text class="t1" x="247.5" y="163" font-size="13">37 s</text>
+<path class="s2" d="M40 170 h450.7 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-450.7 z"><title>DeepSeek + cu-local, shim, text-only, 32k, finder: 84.2 s (2/2 passed)</title></path>
+<text class="t1" x="502.7" y="183" font-size="13">84 s</text>
+<path class="s3" d="M40 190 h152.6 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-152.6 z"><title>gpt-6.1-sol (OpenAI), finder: 29.0 s (1/1 passed)</title></path>
+<text class="t1" x="204.6" y="203" font-size="13">29 s</text>
+<path class="s4" d="M40 210 h401.0 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-401.0 z"><title>DeepSeek, stock Codex config, finder: 75.0 s (1/1 passed)</title></path>
+<text class="t1" x="453.0" y="223" font-size="13">75 s</text>
+<line class="base" x1="40" y1="148" x2="40" y2="230" stroke-width="1.5"/>
+<text class="t1" x="40" y="274" font-size="15" font-weight="600">Calculator: 48271 × 9137</text>
+<path class="s1" d="M40 284 h50.5 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-50.5 z"><title>DeepSeek + cu-local, calculator: 10.1 s (2/2 passed)</title></path>
+<text class="t1" x="102.5" y="297" font-size="13">10 s</text>
+<path class="s2" d="M40 304 h60.8 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-60.8 z"><title>DeepSeek + cu-local, shim, text-only, 32k, calculator: 12.0 s (1/2 passed)</title></path>
+<text class="t1" x="112.8" y="317" font-size="13">12 s (1 of 2 passed)</text>
+<path class="s3" d="M40 324 h114.8 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-114.8 z"><title>gpt-6.1-sol (OpenAI), calculator: 22.0 s (1/1 passed)</title></path>
+<text class="t1" x="166.8" y="337" font-size="13">22 s</text>
+<path class="s4" d="M40 344 h217.4 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-217.4 z"><title>DeepSeek, stock Codex config, calculator: 41.0 s (1/1 passed)</title></path>
+<text class="t1" x="269.4" y="357" font-size="13">41 s</text>
+<line class="base" x1="40" y1="282" x2="40" y2="364" stroke-width="1.5"/>
+<text class="t1" x="40" y="408" font-size="15" font-weight="600">TextEdit: type and save a plain-text file</text>
+<path class="s1" d="M40 418 h298.9 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-298.9 z"><title>DeepSeek + cu-local, textedit: 56.1 s (2/2 passed)</title></path>
+<text class="t1" x="350.9" y="431" font-size="13">56 s</text>
+<path class="s2" d="M40 438 h206.1 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-206.1 z"><title>DeepSeek + cu-local, shim, text-only, 32k, textedit: 38.9 s (2/2 passed)</title></path>
+<text class="t1" x="258.1" y="451" font-size="13">39 s</text>
+<path class="s3" d="M40 458 h201.2 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-201.2 z"><title>gpt-6.1-sol (OpenAI), textedit: 38.0 s (1/1 passed)</title></path>
+<text class="t1" x="253.2" y="471" font-size="13">38 s</text>
+<path class="s4" d="M40 478 h795.2 a4.0 4.0 0 0 1 4.0 4.0 v10.0 a4.0 4.0 0 0 1 -4.0 4.0 h-795.2 z"><title>DeepSeek, stock Codex config, textedit: 148.0 s (1/1 passed)</title></path>
+<text class="t1" x="847.2" y="491" font-size="13">148 s</text>
+<line class="base" x1="40" y1="416" x2="40" y2="498" stroke-width="1.5"/>
+</svg>

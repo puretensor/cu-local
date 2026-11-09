@@ -1,0 +1,12 @@
+{
+ "label": "llama-server, Qwen3-8B Q4_K_M on 16 CPU cores",
+ "note": "llama.cpp b12212 CPU build, --jinja -c 32768, via shim, text-only. 2026-11-09. Finder timed out (10 tool calls in 600 s); the Calculator and TextEdit runs were voided because the Mac's screen locked mid-run.",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 600.0,
+   "ok": false,
+   "note": "timed out: 8B model on 16 CPU cores too slow"
+  }
+ ]
+}

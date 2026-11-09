@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" width="1200" height="470" role="img" aria-labelledby="t d">
+  <title id="t">cu-local: Codex Computer Use on your Mac, driven by your own model</title>
+  <desc id="d">A Calculator window shown as the accessibility tree the model reads, with button 9 (element 14) ringed. Each step sends about 8k tokens to your own model server, which answers app.click(14). Servers shown: DeepSeek V4.1 Flash on vLLM or SGLang, llama.cpp or ds4 on a DGX Spark or one RTX PRO, Ollama or LM Studio.</desc>
+  <style>
+    .ink{fill:#1F2328}.mute{fill:#59636E}.faint{fill:#818B98}
+    .win{fill:#F6F8FA;stroke:#D1D9E0}.bar{fill:#EAEEF2}.rule{stroke:#D1D9E0}
+    .wire{stroke:#59636E}.wireh{fill:#59636E}
+    .focus{stroke:#0A84FF}.focusf{fill:#0A84FF}.focust{fill:#0969DA}
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    @media (prefers-color-scheme: dark){
+      .ink{fill:#E6EDF3}.mute{fill:#9198A1}.faint{fill:#6E7681}
+      .win{fill:#151B23;stroke:#3D444D}.bar{fill:#212830}.rule{stroke:#3D444D}
+      .wire{stroke:#9198A1}.wireh{fill:#9198A1}
+      .focus{stroke:#4493F8}.focusf{fill:#4493F8}.focust{fill:#4493F8}
+    }
+  </style>
+
+  <!-- Left: the app, as the model sees it -->
+  <text class="sans ink" x="40" y="46" font-size="22" font-weight="600">Your Mac</text>
+  <text class="sans mute" x="40" y="74" font-size="17">Codex Computer Use from ChatGPT.app</text>
+
+  <rect class="win" x="40" y="96" width="500" height="318" rx="12" stroke-width="1.5"/>
+  <path class="bar" d="M52 97.5h476a10.5 10.5 0 0 1 10.5 10.5v28H41.5v-28A10.5 10.5 0 0 1 52 97.5z"/>
+  <line class="rule" x1="41" y1="136" x2="539" y2="136" stroke-width="1"/>
+  <circle cx="66" cy="117" r="6.5" fill="#FF5F57"/>
+  <circle cx="88" cy="117" r="6.5" fill="#FEBC2E"/>
+  <circle cx="110" cy="117" r="6.5" fill="#28C840"/>
+  <text class="sans mute" x="290" y="123" font-size="16" text-anchor="middle">Calculator</text>
+
+  <g class="mono" font-size="18">
+    <text class="faint" x="64" y="172">0</text><text class="ink" x="108" y="172">window Calculator</text>
+    <text class="faint" x="64" y="203">1</text><text class="ink" x="132" y="203">group keypad</text>
+    <text class="faint" x="64" y="234">5</text><text class="ink" x="156" y="234">button AC</text>
+    <text class="faint" x="64" y="265">12</text><text class="ink" x="156" y="265">button 7</text>
+    <text class="faint" x="64" y="296">13</text><text class="ink" x="156" y="296">button 8</text>
+    <text class="faint" x="64" y="327">14</text><text class="ink" x="156" y="327">button 9</text>
+    <text class="faint" x="64" y="358">20</text><text class="ink" x="156" y="358">button ×</text>
+    <text class="faint" x="64" y="389">26</text><text class="ink" x="156" y="389">text 441,052,127</text>
+  </g>
+  <!-- macOS focus ring on the element the model acts on -->
+  <rect class="focus" x="146" y="306" width="118" height="30" rx="7" fill="none" stroke-width="3"/>
+
+  <text class="sans mute" x="40" y="446" font-size="16">The model reads the accessibility tree and acts by element id.</text>
+
+  <!-- Middle: one step -->
+  <line class="wire" x1="560" y1="228" x2="772" y2="228" stroke-width="1.75"/>
+  <path class="wireh" d="M782 228l-12-6v12z"/>
+  <text class="sans ink" x="666" y="214" font-size="17" text-anchor="middle">about 8k tokens per step</text>
+
+  <path class="focus" d="M772 300H600q-12 0-12 12v9h-312" fill="none" stroke-width="1.75"/>
+  <path class="focusf" d="M268 321l12-6v12z"/>
+  <text class="mono focust" x="690" y="290" font-size="18" text-anchor="middle">app.click(14)</text>
+
+  <!-- Right: your model, your hardware -->
+  <text class="sans ink" x="800" y="46" font-size="22" font-weight="600">Your model</text>
+  <text class="sans mute" x="800" y="74" font-size="17">Any OpenAI-compatible server</text>
+
+  <line class="rule" x1="800" y1="108" x2="800" y2="402" stroke-width="2"/>
+  <g class="sans">
+    <text class="ink" x="824" y="138" font-size="19" font-weight="600">DeepSeek V4.1 Flash</text>
+    <text class="mute" x="824" y="164" font-size="16">vLLM or SGLang on 4× RTX PRO 6000</text>
+
+    <text class="ink" x="824" y="232" font-size="19" font-weight="600">llama.cpp or ds4</text>
+    <text class="mute" x="824" y="258" font-size="16">DGX Spark, or one RTX PRO with offload</text>
+
+    <text class="ink" x="824" y="326" font-size="19" font-weight="600">Ollama, LM Studio</text>
+    <text class="mute" x="824" y="352" font-size="16">Chat-only servers via the built-in shim</text>
+  </g>
+  <text class="sans mute" x="800" y="446" font-size="16">Nothing leaves your network.</text>
+</svg>

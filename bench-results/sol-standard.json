@@ -1,0 +1,34 @@
+{
+ "label": "gpt-6.1-sol (OpenAI)",
+ "slot": 3,
+ "note": "gpt-6.1-sol, standard tier, effort low, stock Codex harness. 2026-11-09, n=1.",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 29,
+   "ok": true,
+   "tool_calls": 5,
+   "input_tokens": 190076,
+   "cached_input_tokens": 169600,
+   "output_tokens": 327
+  },
+  {
+   "task": "calculator",
+   "seconds": 22,
+   "ok": true,
+   "tool_calls": 3,
+   "input_tokens": 120581,
+   "cached_input_tokens": 83712,
+   "output_tokens": 216
+  },
+  {
+   "task": "textedit",
+   "seconds": 38,
+   "ok": true,
+   "tool_calls": 6,
+   "input_tokens": 234191,
+   "cached_input_tokens": 211328,
+   "output_tokens": 388
+  }
+ ]
+}

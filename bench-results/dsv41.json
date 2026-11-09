@@ -1,0 +1,34 @@
+{
+ "label": "DeepSeek, stock Codex config",
+ "slot": 4,
+ "note": "DeepSeek-V4.1-Flash-1017 on vLLM (4x RTX PRO 6000), Codex with a full user config. 2026-11-09, n=1.",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 75,
+   "ok": true,
+   "tool_calls": 10,
+   "input_tokens": 2268081,
+   "cached_input_tokens": 1921536,
+   "output_tokens": 1397
+  },
+  {
+   "task": "calculator",
+   "seconds": 41,
+   "ok": true,
+   "tool_calls": 1,
+   "input_tokens": 348184,
+   "cached_input_tokens": 16640,
+   "output_tokens": 197
+  },
+  {
+   "task": "textedit",
+   "seconds": 148,
+   "ok": true,
+   "tool_calls": 22,
+   "input_tokens": 4859433,
+   "cached_input_tokens": 4491008,
+   "output_tokens": 3547
+  }
+ ]
+}

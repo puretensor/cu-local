@@ -1,0 +1,68 @@
+{
+ "label": "DeepSeek + cu-local",
+ "note": "DeepSeek-V4.1-Flash-1017, vLLM /v1/responses, 4x RTX PRO 6000. 2026-11-09, n=2. Bench folder was under a hidden directory, which makes Save dialogs harder than in the reference runs.",
+ "cu_local_version": "0.2.0",
+ "results": [
+  {
+   "task": "finder",
+   "seconds": 34.2,
+   "ok": true,
+   "tool_calls": 16,
+   "input_tokens": 341833,
+   "cached_input_tokens": 318976,
+   "output_tokens": 2234,
+   "shell_calls": 0
+  },
+  {
+   "task": "calculator",
+   "seconds": 11.6,
+   "ok": true,
+   "tool_calls": 4,
+   "input_tokens": 70536,
+   "cached_input_tokens": 61440,
+   "output_tokens": 572,
+   "shell_calls": 0
+  },
+  {
+   "task": "textedit",
+   "seconds": 60.1,
+   "ok": true,
+   "tool_calls": 25,
+   "input_tokens": 528359,
+   "cached_input_tokens": 503552,
+   "output_tokens": 4281,
+   "shell_calls": 0
+  },
+  {
+   "task": "finder",
+   "seconds": 39.7,
+   "ok": true,
+   "tool_calls": 8,
+   "input_tokens": 151828,
+   "cached_input_tokens": 137984,
+   "output_tokens": 1371,
+   "shell_calls": 0
+  },
+  {
+   "task": "calculator",
+   "seconds": 8.6,
+   "ok": true,
+   "tool_calls": 4,
+   "input_tokens": 70524,
+   "cached_input_tokens": 61696,
+   "output_tokens": 566,
+   "shell_calls": 0
+  },
+  {
+   "task": "textedit",
+   "seconds": 52.1,
+   "ok": true,
+   "tool_calls": 25,
+   "input_tokens": 538212,
+   "cached_input_tokens": 512000,
+   "output_tokens": 4144,
+   "shell_calls": 0
+  }
+ ],
+ "slot": 1
+}

@@ -1,0 +1,26 @@
+name: Hardware report
+description: Share how cu-local runs on your machine and model
+title: "[hardware] <model> on <hardware>"
+labels: ["hardware-report"]
+body:
+  - type: input
+    id: hardware
+    attributes: {label: Hardware, placeholder: "DGX Spark / 1x RTX PRO 6000 + 256 GB RAM / M4 Max 128 GB ..."}
+    validations: {required: true}
+  - type: input
+    id: model
+    attributes: {label: Model and quantisation, placeholder: "DeepSeek-V4.1-Flash-1017, UD-IQ1_S GGUF"}
+    validations: {required: true}
+  - type: input
+    id: server
+    attributes: {label: Server and version, placeholder: "llama.cpp b12212 / vLLM 0.x / ds4-dfm-rs / Ollama 0.40"}
+    validations: {required: true}
+  - type: textarea
+    id: doctor
+    attributes: {label: "Output of cu-local doctor", render: text}
+  - type: textarea
+    id: bench
+    attributes: {label: "results.json from cu-local bench", render: json}
+  - type: textarea
+    id: notes
+    attributes: {label: Notes, description: "Flags you needed (--text-only, --context, --shim on), speed, anything odd"}
