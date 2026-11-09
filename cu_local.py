@@ -31,7 +31,7 @@ import urllib.request
 import uuid
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 
 # --------------------------------------------------------------------------- paths
 
@@ -91,7 +91,7 @@ def load_user_config() -> Dict[str, Any]:
 
 def save_user_config(cfg: Dict[str, Any]) -> None:
     os.makedirs(STATE, exist_ok=True)
-    tmp = USER_CONFIG + ".tmp"
+    tmp = "%s.%d.%s.tmp" % (USER_CONFIG, os.getpid(), uuid.uuid4().hex[:6])
     with open(tmp, "w") as f:
         json.dump(cfg, f, indent=2, sort_keys=True)
     os.replace(tmp, USER_CONFIG)
@@ -359,8 +359,8 @@ def _text_of(parts: Any) -> str:
         return parts
     out = []
     for p in parts or []:
-        if isinstance(p, dict) and p.get("type") in ("input_text", "output_text", "text", "reasoning_text", "summary_text"):
-            out.append(p.get("text") or "")
+        if isinstance(p, dict) and p.get("type") in ("input_text", "output_text", "text", "reasoning_text", "summary_text", "refusal"):
+            out.append(p.get("text") or p.get("refusal") or "")
     return "".join(out)
 
 
@@ -750,6 +750,9 @@ class StreamTranslator:
             c = d.get("content")
             if isinstance(c, str) and c:
                 ev += self._text_delta(c)
+            ref = d.get("refusal")
+            if isinstance(ref, str) and ref:
+                ev += self._text_delta(ref)
             for pos, tc in enumerate(d.get("tool_calls") or []):
                 ev += self._tool_delta(tc, pos)
             if ch.get("finish_reason"):
@@ -758,9 +761,10 @@ class StreamTranslator:
 
     def finish_events(self) -> List[Dict[str, Any]]:
         ev = self._close_open()
+        truncated = self.finish in (None, "length")
         for it in self.calls.values():
-            it["status"] = "completed"
-            if not it["arguments"]:
+            it["status"] = "incomplete" if truncated else "completed"
+            if not it["arguments"] and not truncated:
                 it["arguments"] = "{}"
             idx = self.output.index(it)
             ev.append(self._ev("response.function_call_arguments.done", item_id=it["id"], output_index=idx,
@@ -820,8 +824,10 @@ class ShimServer(http.server.ThreadingHTTPServer):
     daemon_threads = True
 
     def __init__(self, addr: Tuple[str, int], upstream: str, *, text_only: bool, replay_reasoning: bool,
-                 api_key: Optional[str], model_override: Optional[str], log: Optional[str]):
+                 api_key: Optional[str], model_override: Optional[str], log: Optional[str],
+                 timeout: float = 900):
         super().__init__(addr, ShimHandler)
+        self.timeout = timeout
         self.upstream = upstream.rstrip("/")
         self.text_only = text_only
         self.replay_reasoning = replay_reasoning
@@ -847,6 +853,14 @@ class ShimHandler(http.server.BaseHTTPRequestHandler):
         elif auth:
             h["Authorization"] = auth
         return h
+
+    def _redact(self, text: str) -> str:
+        """Remove credentials from upstream text before it is logged or returned."""
+        secrets = [self.server.api_key or "", (self.headers.get("Authorization") or "").replace("Bearer ", "")]
+        for sec in secrets:
+            if len(sec) >= 8:
+                text = text.replace(sec, "[redacted]")
+        return re.sub(r"(?i)(bearer\s+|api[_-]?key[\"'=: ]+)[A-Za-z0-9._\-]{8,}", r"\1[redacted]", text)
 
     def _send_json(self, code: int, obj: Any) -> None:
         body = json.dumps(obj).encode()
@@ -885,10 +899,10 @@ class ShimHandler(http.server.BaseHTTPRequestHandler):
         up = urllib.request.Request(self.server.upstream + "/chat/completions",
                                     data=json.dumps(chat).encode(), headers=self._headers(), method="POST")
         try:
-            resp = urllib.request.urlopen(up, timeout=900)
+            resp = urllib.request.urlopen(up, timeout=self.server.timeout)
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", "replace")
-            self.log_message("upstream %s: %s", e.code, body[:500])
+            body = self._redact(e.read().decode("utf-8", "replace"))
+            self.log_message("upstream HTTP %s", e.code)
             return self._send_json(e.code, {"error": {"message": "upstream: " + body[:2000], "type": "upstream_error"}})
         except Exception as e:  # noqa: BLE001
             return self._send_json(502, {"error": {"message": "upstream unreachable: %s" % e}})
@@ -935,9 +949,10 @@ class ShimHandler(http.server.BaseHTTPRequestHandler):
 
 def start_shim(upstream: str, *, host: str = "127.0.0.1", port: int = 0, text_only: bool = False,
                replay_reasoning: bool = False, api_key: Optional[str] = None,
-               model_override: Optional[str] = None, log: Optional[str] = None) -> ShimServer:
+               model_override: Optional[str] = None, log: Optional[str] = None,
+               timeout: float = 900) -> ShimServer:
     srv = ShimServer((host, port), upstream, text_only=text_only, replay_reasoning=replay_reasoning,
-                     api_key=api_key, model_override=model_override, log=log)
+                     api_key=api_key, model_override=model_override, log=log, timeout=timeout)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv
 
@@ -992,10 +1007,13 @@ def _probe_responses_once(base_url: str, model: str, api_key: Optional[str], tim
     if code != 200 or not isinstance(data, dict):
         return {"ok": False, "reason": "HTTP %s" % code, "detail": str(data)[:300], "seconds": dt}
     calls = [o for o in data.get("output") or [] if isinstance(o, dict) and o.get("type") == "function_call"]
-    good = [c for c in calls if c.get("name") in ("ping", "mcp__probe__ping")]
-    if not good:
-        return {"ok": False, "reason": "no namespaced tool call in native /responses output", "seconds": dt}
-    return {"ok": True, "namespace_kept": good[0].get("namespace") == "mcp__probe", "seconds": dt}
+    kept = [c for c in calls if c.get("name") == "ping" and c.get("namespace") == "mcp__probe"]
+    flat = [c for c in calls if c.get("name") == "mcp__probe__ping"]
+    if kept or flat:
+        return {"ok": True, "namespace_kept": bool(kept), "seconds": dt}
+    if calls:
+        return {"ok": False, "reason": "server dropped the tool namespace", "seconds": dt}
+    return {"ok": False, "reason": "no namespaced tool call in native /responses output", "seconds": dt}
 
 
 def probe_chat(base_url: str, model: str, api_key: Optional[str] = None, image: bool = False,
@@ -1141,7 +1159,7 @@ def cmd_run(ns: argparse.Namespace, extra: List[str]) -> int:
     base_url = s.endpoint
     if s.shim_mode == "shim":
         shim = start_shim(s.endpoint, text_only=s.text_only, replay_reasoning=s.replay_reasoning,
-                          api_key=s.api_key, log=os.path.join(STATE, "shim.log"))
+                          api_key=s.api_key, log=os.path.join(STATE, "shim.log"), timeout=s.idle_timeout)
         base_url = "http://127.0.0.1:%d/v1" % shim.server_address[1]
     home, work = prepare_home(s, model, base_url, context)
     if screen_locked():
@@ -1238,7 +1256,8 @@ def cmd_doctor(ns: argparse.Namespace) -> int:
         row(False, "Codex model profile", str(e))
 
     endpoint = (ns.endpoint or os.environ.get("CU_ENDPOINT") or load_user_config().get("endpoint") or "").rstrip("/")
-    key = os.environ.get(ns.api_key_env) if ns.api_key_env else None
+    key_env = ns.api_key_env or load_user_config().get("api_key_env")
+    key = os.environ.get(key_env) if key_env else None
     print("\nEndpoint %s" % (endpoint or "(none)"))
     if not endpoint:
         row(False, "endpoint", "pass --endpoint http://host:port/v1")
@@ -1311,6 +1330,17 @@ def bench_verify(task: str, d: str, last: str, token: str) -> bool:
     return False
 
 
+def _kill_group(p: "subprocess.Popen[Any]") -> None:
+    for sig in (signal.SIGTERM, signal.SIGKILL):
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(p.pid, sig)
+        try:
+            p.wait(10)
+            return
+        except subprocess.TimeoutExpired:
+            continue
+
+
 BENCH_APPS = ("Calculator", "TextEdit")
 
 
@@ -1326,6 +1356,9 @@ def _quit_apps(enabled: bool) -> None:
 
 
 def cmd_bench(ns: argparse.Namespace, extra: List[str]) -> int:
+    def on_term(signum: int, _frame: Any) -> None:
+        raise SystemExit(128 + signum)  # unwinds through the worker cleanup
+    signal.signal(signal.SIGTERM, on_term)
     tasks = [t.strip() for t in ns.tasks.split(",") if t.strip()]
     for t in tasks:
         if t not in BENCH_TASKS:
@@ -1365,16 +1398,15 @@ def cmd_bench(ns: argparse.Namespace, extra: List[str]) -> int:
             with open(os.path.join(d, "events.jsonl"), "w") as out, open(os.path.join(d, "stderr.txt"), "w") as err:
                 # Own process group, so a timeout also stops Codex and the Computer Use server.
                 p = subprocess.Popen(argv, stdout=out, stderr=err, start_new_session=True)
+                rc = 124
                 try:
                     rc = p.wait(timeout=ns.timeout)
                 except subprocess.TimeoutExpired:
-                    rc = 124
-                    for sig in (signal.SIGTERM, signal.SIGKILL):
-                        with contextlib.suppress(ProcessLookupError):
-                            os.killpg(p.pid, sig)
-                        with contextlib.suppress(subprocess.TimeoutExpired):
-                            p.wait(10)
-                            break
+                    pass
+                finally:
+                    # Ctrl-C does not reach a detached session: stop it on every exit path.
+                    if p.poll() is None:
+                        _kill_group(p)
             secs = time.time() - t0
             last = ""
             with contextlib.suppress(OSError):

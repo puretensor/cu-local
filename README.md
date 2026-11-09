@@ -79,7 +79,7 @@ It's one Python file using only the standard library. Read it before you run it:
 |---|---|
 | `cu-local run "task"` | Run one task. Extra Codex flags go after `--`, e.g. `-- --json`. |
 | `cu-local doctor --endpoint URL [--save]` | Check the Mac and the server, and recommend settings. |
-| `cu-local bench [--repeats N]` | Run the reference tasks and check the results. Writes `results.json`. |
+| `cu-local bench [--repeats N] [--quit-apps]` | Run the reference tasks and check the results. Writes `results.json`. `--quit-apps` quits Calculator and TextEdit between tasks, for cleaner runs. |
 | `cu-local shim --upstream URL` | Run the Responses→Chat shim on its own, for any Responses client. |
 
 Common options: `--model`, `--text-only`, `--context N`, `--shim on|off|auto`, `--effort low|medium|high`, `--idle-timeout SECONDS` for slow servers, `--api-key-env VAR`.

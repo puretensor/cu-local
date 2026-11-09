@@ -35,7 +35,7 @@ def cell(d, task):
     ok = [r["seconds"] for r in runs if r["ok"]]
     return (statistics.median(ok) if ok else None), len(ok), len(runs)
 
-vmax = max(c[0] for d in series for t, _ in TASKS for c in [cell(d, t)] if c[0])
+vmax = max([c[0] for d in series for t, _ in TASKS for c in [cell(d, t)] if c[0]] or [60])
 step = 30 if vmax > 90 else 15
 axis_max = step * (int(vmax // step) + 1)
 

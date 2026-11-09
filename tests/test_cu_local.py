@@ -287,7 +287,56 @@ class ReviewRegressionTests(unittest.TestCase):
     def test_length_with_tool_call_is_incomplete(self):
         tr = cu.StreamTranslator("m", {})
         tr.feed({"choices": [{"delta": {"tool_calls": [{"index": 0, "id": "a", "function": {"name": "f", "arguments": '{"x":'}}]}, "finish_reason": "length"}]})
-        self.assertEqual(tr.finish_events()[-1]["type"], "response.incomplete")
+        evs = tr.finish_events()
+        self.assertEqual(evs[-1]["type"], "response.incomplete")
+        done = [e["item"] for e in evs if e["type"] == "response.output_item.done"]
+        self.assertEqual(done[0]["status"], "incomplete")
+        self.assertEqual(done[0]["arguments"], '{"x":')
+
+    def test_refusal_is_surfaced(self):
+        tr = cu.StreamTranslator("m", {})
+        tr.feed({"choices": [{"delta": {"refusal": "I can't help with that."}, "finish_reason": "stop"}]})
+        out = tr.finish_events()[-1]["response"]["output"]
+        self.assertEqual(out[0]["content"][0]["text"], "I can't help with that.")
+
+    def test_probe_requires_namespace(self):
+        saved = cu.http_json
+        try:
+            def fake(url, body=None, timeout=30, api_key=None, out=None):
+                return 200, {"output": out}
+            for out, ok in (([{"type": "function_call", "name": "ping"}], False),
+                            ([{"type": "function_call", "name": "ping", "namespace": "mcp__probe"}], True),
+                            ([{"type": "function_call", "name": "mcp__probe__ping"}], True)):
+                cu.http_json = lambda url, body=None, timeout=30, api_key=None, _o=out: (200, {"output": _o})
+                self.assertEqual(cu.probe_responses("http://x/v1", "m", attempts=1)["ok"], ok, out)
+        finally:
+            cu.http_json = saved
+
+    def test_upstream_error_body_is_redacted(self):
+        class H(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *a):
+                pass
+
+            def do_POST(self):
+                self.rfile.read(int(self.headers["Content-Length"]))
+                body = b'{"error":"Invalid API key: SECRETKEY123456 for Bearer SECRETKEY123456"}'
+                self.send_response(401)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+        import tempfile
+        up = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+        threading.Thread(target=up.serve_forever, daemon=True).start()
+        with tempfile.NamedTemporaryFile("r") as log:
+            shim = cu.start_shim("http://127.0.0.1:%d/v1" % up.server_address[1], api_key="SECRETKEY123456", log=log.name)
+            try:
+                code, data = cu.http_json("http://127.0.0.1:%d/v1/responses" % shim.server_address[1], {"model": "m", "input": "hi"}, timeout=5)
+                self.assertEqual(code, 401)
+                self.assertNotIn("SECRETKEY123456", json.dumps(data))
+                self.assertNotIn("SECRETKEY123456", open(log.name).read())
+            finally:
+                shim.shutdown()
+                up.shutdown()
 
     def test_iter_sse_plain_json_body(self):
         import io
@@ -325,9 +374,19 @@ class ReviewRegressionTests(unittest.TestCase):
 class FakeChat(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     seen = []
+    gets = []
 
     def log_message(self, *a):
         pass
+
+    def do_GET(self):
+        FakeChat.gets.append(self.path)
+        body = json.dumps({"object": "list", "data": [{"id": "fake-model"}]}).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
@@ -369,8 +428,12 @@ class ShimServerTests(unittest.TestCase):
         threading.Thread(target=up.serve_forever, daemon=True).start()
         shim = cu.start_shim("http://127.0.0.1:%d/v1" % up.server_address[1])
         try:
-            code, data = cu.http_json("http://127.0.0.1:%d/v1?x=1" % shim.server_address[1], timeout=5)
+            FakeChat.gets = []
+            code, data = cu.http_json("http://127.0.0.1:%d/v1/models?client_version=1" % shim.server_address[1], timeout=5)
             self.assertEqual(code, 200)
+            self.assertEqual(data["data"][0]["id"], "fake-model")
+            self.assertEqual(FakeChat.gets, ["/v1/models"])
+            code, data = cu.http_json("http://127.0.0.1:%d/v1?x=1" % shim.server_address[1], timeout=5)
             self.assertTrue(data["ok"])
         finally:
             shim.shutdown()
