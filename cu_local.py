@@ -31,7 +31,7 @@ import urllib.request
 import uuid
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 # --------------------------------------------------------------------------- paths
 
@@ -1460,7 +1460,8 @@ def add_run_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--shim", choices=["auto", "on", "off"], help="Responses->Chat shim (default auto: probe once)")
     p.add_argument("--text-only", action="store_true", help="model has no vision; never send images")
     p.add_argument("--context", type=int, help="context window to tell Codex (default: from /v1/models, else 131072)")
-    p.add_argument("--effort", choices=["low", "medium", "high"], help="reasoning effort (default low)")
+    p.add_argument("--effort", choices=["none", "low", "medium", "high"],
+                   help="reasoning effort (default low; none turns thinking off, which is fastest for UI work)")
     p.add_argument("--replay-reasoning", action="store_true", help="shim: send prior reasoning back as reasoning_content")
     p.add_argument("--idle-timeout", type=int, help="seconds to wait for a slow backend between tokens (default 600)")
     p.add_argument("--allow-shell", action="store_true", help="also give the model a shell (off by default)")

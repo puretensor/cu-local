@@ -8,6 +8,12 @@ The Computer Use plugin in ChatGPT.app is one of the best ways to let a model op
 
 Without cu-local, two things go wrong when you try this. **Every step carries your entire Codex setup**: your instructions and every MCP server and tool. On our setup that was about 140k tokens per step, so a 30-second task took minutes. And **most local servers only half-speak the Responses API** that Codex now requires, so tool calls quietly disappear. cu-local fixes both.
 
+## See it run
+
+<p align="center"><a href="https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4"><img src="assets/demo.gif" alt="DeepSeek V4.1 Flash fills in a five-line expense claim from receipts in Safari and submits it, while a side panel lists each step and a clock shows 33 seconds of real time" width="100%"></a></p>
+
+DeepSeek V4.1 Flash, on our own 4× RTX PRO 6000 server, fills in an expense claim from five receipts on a MacBook and submits it, in 33 seconds of real time. The step list is the model's own description of each action. Thinking was off (`--effort none`). [Watch the full-quality MP4](https://github.com/puretensor/cu-local/releases/download/v1.1.0/cu-local-expense-demo.mp4).
+
 ## Quick start
 
 ```bash
@@ -82,7 +88,7 @@ It's one Python file using only the standard library. Read it before you run it:
 | `cu-local bench [--repeats N] [--quit-apps]` | Run the reference tasks and check the results. Writes `results.json`. `--quit-apps` quits Calculator and TextEdit between tasks, for cleaner runs. |
 | `cu-local shim --upstream URL` | Run the Responses→Chat shim on its own, for any Responses client. |
 
-Common options: `--model`, `--text-only`, `--context N`, `--shim on|off|auto`, `--effort low|medium|high`, `--idle-timeout SECONDS` for slow servers, `--api-key-env VAR`.
+Common options: `--model`, `--text-only`, `--context N`, `--shim on|off|auto`, `--effort none|low|medium|high` (`none` turns thinking off: fastest for UI work), `--idle-timeout SECONDS` for slow servers, `--api-key-env VAR`.
 
 ## Safety and privacy
 
