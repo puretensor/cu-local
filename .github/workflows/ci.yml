@@ -39,5 +39,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      # GitHub's ubuntu-latest ships shellcheck; the Gitea mirror's runner
+      # image does not, so lint failed there with exit 127 on every push.
+      - name: Install shellcheck if the runner image lacks it
+        run: |
+          command -v shellcheck >/dev/null 2>&1 && exit 0
+          SUDO=; [ "$(id -u)" = 0 ] || SUDO=sudo
+          $SUDO apt-get update -qq
+          $SUDO apt-get install -y -qq shellcheck
       - run: shellcheck install.sh scripts/leak-scan.sh
       - run: sh scripts/leak-scan.sh
